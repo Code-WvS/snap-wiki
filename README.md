@@ -43,3 +43,41 @@ this.pushContext();
 ```
 and your function will be called on every tick. You can save something inside the context (`this.context.test = "Hello World!"`) and it will therefore be available in the following executions.
 The advantage of adding your function to a `SpriteMorph` or `StageMorph` is that you can access the stage/sprite directly with `this` and the functions for either of them can variate.
+
+Drawing something on the stage
+------------------------------
+
+### Easy method
+To get something instantly on the stage the easiest way is to overwrite the pen trails. `stage.trailsCanvas` is a canvas of the stage's width and height. It lies behind the sprites but on top of the stage's costume. Usually, the dimensions are 360 * 480px but you should not rely on that as it can be changed in the settings by the user.
+Outside the deep insides of Snap*!* you need to get the stage object, for example like this: `var stage = world.children[0].stage`. In theory there could be more than one IDE (`world.children`) but most often this short assignment is enough. `trailsCanvas` behaves like a normal canvas and has a context you can draw on. Drawing should happen in `snap.html`'s `loop` but it does not need to; you can redraw with `stage.changed()` otherwise.
+
+### Div method
+Sometimes you need to have HTML as your 'stage' and a canvas is not enough. Luckily, modifying `StageMorph.prototype.drawOn` is very straightforward.
+Get your element, preferrably a `div`. Resizing and positioning can be adopted from the original `drawOn` (`div` is your element):
+```javascript
+var div = document.getElementById('div');
+// make sure to draw the pen trails canvas as well
+var rectangle, area, delta, src, w, h, sl, st;
+if (!this.isVisible) {
+    return null;
+}
+rectangle = aRect || this.bounds;
+area = rectangle.intersect(this.bounds).round();
+if (area.extent().gt(new Point(0, 0))) {
+    delta = this.position().neg();
+    src = area.copy().translateBy(delta).round();
+        
+    sl = src.left();
+    st = src.top();
+    w = Math.min(src.width(), this.image.width - sl);
+    h = Math.min(src.height(), this.image.height - st);
+
+    if (w < 1 || h < 1) {
+        return null;
+    }
+    div.style.width = w + 'px';
+    div.style.height = h + 'px';
+    div.style.left = area.left() + 'px';
+    div.style.top = area.top() + 'px';
+}
+```
