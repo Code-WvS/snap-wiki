@@ -41,7 +41,7 @@ If you want to do your action continuously, use a `threads.js` function. There y
 this.pushContext('doYield');
 this.pushContext();
 ```
-and your function will be called on every tick. You can save something inside the context (`this.context.test = "Hello World!"`) and it will therefore be available in the following executions.
+and your function will be called on every tick. You can save something inside the context (`this.context.test = "Hello World!"`) and it will therefore be available in the following executions. A reporter can return something with `return`, this can even happen after multiple cycles.
 The advantage of adding your function to a `SpriteMorph` or `StageMorph` is that you can access the stage/sprite directly with `this` and the functions for either of them can variate.
 
 Drawing something on the stage
