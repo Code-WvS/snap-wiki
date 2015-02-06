@@ -30,3 +30,16 @@ foo: {
 StageMorph and SpriteMorph share the same `blocks`.
 
 To let your block appear in a specific category, look at `SpriteMorph.prototype.blockTemplates` or `StageMorph.prototype.blockTemplates` (important: if you want your block to appear in both, add it to *every* `blockTemplates`, this is not that obvious because the source for both look similar). After `if (cat === 'motion') {`, where `motion` is the desired category, you can do a `blocks.push(block('foo'));` where `foo` is the name from above. `blocks.push('-')` adds some space between two blocks and `blocks.push('=')` even more. To add a block only in development mode, you can check `this.world().isDevMode`. For a reporter you have the option to add a `blocks.push(watcherToggle('yourblock'))` before the actual block definition so the user is able to add activate a watcher.
+
+Your block needs to do something; you have these choices to define a function:
+* add your function `foo` to `threads.js`, for example `Process.prototype.foo = function (bar) { console.log(bar); };`
+  * if you want to access the stage from inside the function you can get it via `this.homeContext.receiver.parentThatIsA(StageMorph)`, `this.homeContext.receiver` is the caller of the block
+* add your function `foo` to the sprite and/or the stage in `objects.js`, like `SpriteMorph.prototype.foo = function (bar) { console.log(bar); }; StageMorph.prototype.foo = SpriteMorph.prototype.foo;`
+
+If you want to do your action continuously, use a `threads.js` function. There you can append
+```javascript
+this.pushContext('doYield');
+this.pushContext();
+```
+and your function will be called on every tick. You can save something inside the context (`this.context.test = "Hello World!"`) and it will therefore be available in the following executions.
+The advantage of adding your function to a `SpriteMorph` or `StageMorph` is that you can access the stage/sprite directly with `this` and the functions for either of them can variate.
