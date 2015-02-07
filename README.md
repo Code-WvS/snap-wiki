@@ -56,28 +56,12 @@ Sometimes you need to have HTML as your 'stage' and a canvas is not enough. Luck
 Get your element, preferrably a `div`. Resizing and positioning can be adopted from the original `drawOn` (`div` is your element):
 ```javascript
 var div = document.getElementById('div');
-// make sure to draw the pen trails canvas as well
-var rectangle, area, delta, src, w, h, sl, st;
-if (!this.isVisible) {
-    return null;
-}
+var rectangle, area;
 rectangle = aRect || this.bounds;
 area = rectangle.intersect(this.bounds).round();
-if (area.extent().gt(new Point(0, 0))) {
-    delta = this.position().neg();
-    src = area.copy().translateBy(delta).round();
-        
-    sl = src.left();
-    st = src.top();
-    w = Math.min(src.width(), this.image.width - sl);
-    h = Math.min(src.height(), this.image.height - st);
-
-    if (w < 1 || h < 1) {
-        return null;
-    }
-    div.style.width = w + 'px';
-    div.style.height = h + 'px';
-    div.style.left = area.left() + 'px';
-    div.style.top = area.top() + 'px';
-}
+div.style.width = this.dimensions.x * this.scale + 'px';
+div.style.height = this.dimensions.y * this.scale + 'px';
+div.style.left = area.left() + 'px';
+div.style.top = area.top() + 'px';
+optionalCustomRefreshFunction();
 ```
