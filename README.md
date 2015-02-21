@@ -65,3 +65,4 @@ div.style.left = area.left() + 'px';
 div.style.top = area.top() + 'px';
 optionalCustomRefreshFunction();
 ```
+Todo: There is an issue when a sprite is moved/dragged. The overlaying div then moves to the wrong position.
