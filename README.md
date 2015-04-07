@@ -55,14 +55,20 @@ Outside the deep insides of Snap*!* you need to get the stage object, for exampl
 Sometimes you need to have HTML as your 'stage' and a canvas is not enough. Luckily, modifying `StageMorph.prototype.drawOn` is very straightforward.
 Get your element, preferrably a `div`. Resizing and positioning can be adopted from the original `drawOn` (`div` is your element):
 ```javascript
-var div = document.getElementById('div');
-var rectangle, area;
-rectangle = aRect || this.bounds;
-area = rectangle.intersect(this.bounds).round();
-div.style.width = this.dimensions.x * this.scale + 'px';
-div.style.height = this.dimensions.y * this.scale + 'px';
-div.style.left = area.left() + 'px';
-div.style.top = area.top() + 'px';
+var div = document.getElementById('foo'),
+    ide = this.parentThatIsA(IDE_Morph);
+
+if (!ide.isAppMode) {
+    div.style.left = this.left() + 'px';
+    div.style.top = this.top() + 'px';
+    div.style.width = this.dimensions.x * this.scale + 'px';
+    div.style.height = this.dimensions.y * this.scale + 'px';
+} else {
+    div.style.left = ide.left() + 'px';
+    div.style.top = this.top() + 'px';
+    div.style.width = ide.extent().x + 'px';
+    div.style.height = (ide.extent().y - this.top()) + 'px';
+}
 optionalCustomRefreshFunction();
 ```
 Todo: There is an issue when a sprite is moved/dragged. The overlaying div then moves to the wrong position.
